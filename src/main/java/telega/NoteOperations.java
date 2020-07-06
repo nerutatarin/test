@@ -55,7 +55,6 @@ public class NoteOperations {
                 int id = rs.getInt("id");
                 String title = rs.getString("title");
                 //String text = rs.getString("text");
-
                 System.out.printf("%d. %s. \n", id, title);
 
             }
