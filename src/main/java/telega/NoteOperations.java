@@ -44,15 +44,28 @@ public class NoteOperations {
         //System.out.println("Список заметок:");
 
         try (Connection con = DriverManager.getConnection(url, user, password)) {
-            String query = "SELECT * FROM notes WHERE user_id=(?)";
+            String query = "SELECT id, title FROM notes WHERE user_id = ?";
 
             PreparedStatement ps = con.prepareStatement(query);
             ps.setLong(1, userId);
 
-            ps.executeUpdate();
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+
+                int id = rs.getInt("id");
+                String title = rs.getString("title");
+                //String text = rs.getString("text");
+
+                System.out.printf("%d. %s. \n", id, title);
+
+            }
+
+            //ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
             throw new Exception(e);
         }
+
     }
+
 }

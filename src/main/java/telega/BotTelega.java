@@ -53,7 +53,7 @@ public class BotTelega extends TelegramLongPollingBot {
                 Long userId = update.getMessage().getChatId();
                 try {
                     operations.listNote(userId);
-                    message.setChatId(update.getMessage().getChatId()).setText("Список заметок:");
+                    message.setChatId(update.getMessage().getChatId()).setText("Список заметок: ");
                 } catch (Exception e) {
                     message.setChatId(update.getMessage().getChatId()).setText("Something wrong, " + e.getMessage());
                 }
@@ -61,7 +61,7 @@ public class BotTelega extends TelegramLongPollingBot {
             } else if (text.startsWith(COMMAND_DEL)) {
                 String[] strings = text.split(" ", 2);
                 if (strings.length < 2) return;
-                int noteId = Integer.valueOf(strings[1]);
+                int noteId = Integer.parseInt(strings[1]);
                 if (noteId == -1) return;
 
                 NoteOperations operations = new NoteOperations();
