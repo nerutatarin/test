@@ -1,7 +1,11 @@
 package telega;
 
-public interface NoteService {
-    void addNote(String text);
-    void deleteNote(int id);
+import java.util.List;
 
+public interface NoteService {
+    void addNote(Note note) throws Exception;
+
+    void deleteNote(int id) throws Exception;
+
+    List<Note> getUserNoteList(long userId) throws Exception;
 }

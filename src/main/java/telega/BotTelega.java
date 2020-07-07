@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class BotTelega extends TelegramLongPollingBot {
 
@@ -25,11 +25,9 @@ public class BotTelega extends TelegramLongPollingBot {
             SendMessage message = new SendMessage();
             String str = update.getMessage().getText();
 
-            Note note = new Note();
-            note.userId = update.getMessage().getChatId();
+            NoteService operations = new DBNoteServiceImpl();
 
-            NoteOperations operations = new NoteOperations();
-
+            Long userId = update.getMessage().getChatId();
             if (str.startsWith(COMMAND_ADD)) {
                 String[] strings = str.split(" ", 3);
 
@@ -39,31 +37,34 @@ public class BotTelega extends TelegramLongPollingBot {
 
                 if (noteTitle.isEmpty() || noteText.isEmpty()) return;
 
-                note.title = noteTitle;
-                note.text = noteText;
+                Note note = new Note(noteTitle, noteText, userId);
 
                 try {
                     operations.addNote(note);
-                    message.setChatId(note.userId).setText("Заметка добавлена!");
+                    message.setChatId(note.getUserId()).setText("Заметка добавлена!");
                 } catch (Exception e) {
-                    message.setChatId(note.userId).setText("Что-то не так, " + e.getMessage());
+                    message.setChatId(note.getUserId()).setText("Что-то не так, " + e.getMessage());
                 }
 
             } else if (str.equals(COMMAND_HELP)) {
                 String helpText = "/add добавить заметку (шаблон: /add title text)\n" +
                         "/del удалить заметку (шаблон: /del id) где id номер заметки\n" +
                         "/list список заметок\n";
-                message.setChatId(update.getMessage().getChatId()).setText(helpText);
+                message.setChatId(userId).setText(helpText);
 
             } else if (str.equals(COMMAND_LIST)) {
 
-               ArrayList<String> list = new ArrayList<String>();
-
                 try {
-                    //operations.getListNote(note);
-                    message.setChatId(update.getMessage().getChatId()).setText("Список заметок: " + operations.getListNote(note) );
+                    List<Note> userNoteList = operations.getUserNoteList(userId);
+
+                    String messageText = "Список заметок: \n";
+                    for (Note note : userNoteList) {
+                        messageText += "ID: " + note.getId() + " Title: " + note.getTitle() + "\n";
+                    }
+
+                    message.setChatId(userId).setText(messageText);
                 } catch (Exception e) {
-                    message.setChatId(update.getMessage().getChatId()).setText("Что-то не так, " + e.getMessage());
+                    message.setChatId(userId).setText("Что-то не так, " + e.getMessage());
                 }
 
             } else if (str.startsWith(COMMAND_DEL)) {
@@ -71,13 +72,12 @@ public class BotTelega extends TelegramLongPollingBot {
                 if (strings.length < 2) return;
                 int noteId = Integer.parseInt(strings[1]);
                 if (noteId == -1) return;
-                note.id = noteId;
 
                 try {
-                    operations.deleteNote(note);
-                    message.setChatId(update.getMessage().getChatId()).setText("Заметка удалена!");
+                    operations.deleteNote(noteId);
+                    message.setChatId(userId).setText("Заметка удалена!");
                 } catch (Exception e) {
-                    message.setChatId(update.getMessage().getChatId()).setText("Что-то не так, " + e.getMessage());
+                    message.setChatId(userId).setText("Что-то не так, " + e.getMessage());
                 }
 
             }
