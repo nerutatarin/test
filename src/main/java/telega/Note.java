@@ -1,10 +1,13 @@
 package telega;
 
-public class Note {
+import java.util.ArrayList;
+
+//public class Note extends ArrayList<String>
+ public class Note {
     int id;
     String title;
     String text;
-    Long userId;
-
+    long userId;
+//    String list;
 }
 

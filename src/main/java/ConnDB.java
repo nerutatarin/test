@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
 
-public class ConnectionBD {
+public class ConnDB {
     public static void main(String[] args) {
         String url = "jdbc:mysql://127.0.0.1:3306/telega";
         String user = "root";
-        String password = "";
+        String password = "root";
 
         try (Connection con = DriverManager.getConnection(url, user, password)) {
             String query = "SELECT * FROM users WHERE id = 1";
