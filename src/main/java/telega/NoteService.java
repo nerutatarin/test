@@ -1,5 +1,7 @@
 package telega;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 public interface NoteService {
@@ -8,4 +10,5 @@ public interface NoteService {
     void deleteNote(int id) throws Exception;
 
     List<Note> getUserNoteList(long userId) throws Exception;
+
 }

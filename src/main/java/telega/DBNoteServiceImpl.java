@@ -3,13 +3,20 @@ package telega;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DBNoteServiceImpl implements NoteService {
-    String url = "jdbc:mysql://127.0.0.1:3306/telega";
-    String user = "root";
-    String password = "";
+
+    ReadFileLineByLine test = new ReadFileLineByLine();
+
+    Map<String, String> map = test.getDBPropConn();
+
+    String url = map.get("url");
+    String user = map.get("user");
+    String password = map.get("password");
 
     public void addNote(Note note) throws Exception {
+
         System.out.println(note.getTitle() + " " + note.getText());
 
         try (Connection con = DriverManager.getConnection(url, user, password)) {
